@@ -1,63 +1,59 @@
 var timeUp = 0;
-const timer = document.getElementById("counter");
-const minus = 'down';
-const plus = 'up';
+const counter = document.getElementById("counter");
+const minusButton = document.getElementById('-');
+const plusButton = document.getElementById('+');
+const heartButton = document.getElementById('<3');
+const pauseButton = document.getElementById('pause');
+const commentForm = document.getElementById("comment-form");
 
-var myVar = setInterval(function() {
-  timer.textContent = timeUp;
-  timeUp++;
-}, 1000)
-
-let minusButton = document.getElementById('-');
-minusButton.addEventListener("click", () =>  changeTimer(minus))
-
-let plusButton = document.getElementById('+')
-plusButton.addEventListener("click", () =>  changeTimer(plus))
-
-function changeTimer(operation) {
-  if (operation === "down") {
-  timeUp = timeUp - 5;
-  timer.textContent = timeUp;
-  } else {
-    timeUp = timeUp + 10;
-    timer.textContent = timeUp;
-  }
-}
-
-let heartButton = document.getElementById('<3');
-heartButton.addEventListener("click", () => addLikes())
-let arr = [];
-
-function addLikes() {
-  arr.push(timeUp);
-  let filtArr = arr.filter(time => time === timeUp)
-  let likeCount = filtArr.length
-  console.log(arr);
-
-  alert(`Number liked: ${timeUp}, No. of Times Liked: ${likeCount}`);
-}
-
-let pauseButton = document.getElementById('pause');
+let likesArr = [];
+let likesCounter;
 let paused = false;
-pauseButton.addEventListener("click", () => disableButtons());
-console.log(paused)
-function disableButtons() {
+
+// counter.textContent returns "0"
+var myTimer = setInterval(function() { counter.textContent = timeUp; timeUp++; }, 1000);
+
+minusButton.addEventListener("click", function(event) {
+  event.preventDefault();
+
+  timeUp--
+});
+
+plusButton.addEventListener("click", function(event) {
+  event.preventDefault();
+
+  timeUp++
+});
+
+heartButton.addEventListener("click", function(event) {
+  event.preventDefault();
+
+  if (likesArr.includes(timeUp)) {
+    likesCounter++
+  } else {
+    likesArr.push(timeUp);
+    likesCounter = 1;
+  }
+
+  alert(`Number: ${timeUp}, Liked ${likesCounter} time(s)`);
+
+});
 
 
-  if(!paused) {
+pauseButton.addEventListener("click", function(event) {
+
+  if (!paused) {
     minusButton.disabled = true;
     plusButton.disabled = true;
     heartButton.disabled = true;
 
     paused = true;
 
-    return clearInterval(myVar);
+    return clearInterval(myTimer);
+
   } else if (paused) {
 
-    myVar = setInterval(function() {
-      timer.textContent = timeUp;
-      timeUp++;
-    }, 1000)
+    myTimer = setInterval(function() { counter.textContent = timeUp; timeUp++; }, 1000);
 
     minusButton.disabled = false;
     plusButton.disabled = false;
@@ -65,20 +61,22 @@ function disableButtons() {
 
     paused = false;
 
-    return myVar;
+    return myTimer;
   }
-}
 
- let submitButton= document.getElementById("comment-form")
- submitButton.addEventListener("submit",generateComment);
-function generateComment(event){
-  event.preventDefault()
-  let com = document.getElementById('comment_id').value;
-  console.log(com)
+});
+
+commentForm.addEventListener("submit", function(event) {
+  event.preventDefault();
+
+  let comment = document.getElementById('comment_id').value;
   const p = document.createElement('p');
+
   p.className = "comment";
-  p.innerText = com;
+  p.innerText = comment;
+
   let lis = document.getElementById("list")
 
   return lis.appendChild(p);
-}
+
+});
